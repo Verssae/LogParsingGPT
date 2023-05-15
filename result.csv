@@ -1,0 +1,2 @@
+log,oracle,template,variables,correct
+Receiving block blk_9146254623576405494 src: /10.250.7.146:60294 dest: /10.250.7.146:50010,Receiving block <*> src: <*>:<*> dest: <*>:<*>,Receiving block {block_id} src: {src} dest: {dest},"{'block_id': 'blk_9146254623576405494', 'src': '/10.250.7.146:60294', 'dest': '/10.250.7.146:50010'}",False
