@@ -1,0 +1,183 @@
+[
+    {
+        "variables": {
+            "variable_1": "0",
+            "variable_2": "blk_4068667188725811395"
+        },
+        "template": "PacketResponder {variable_1} for block {variable_2} terminating",
+        "oracle": "PacketResponder <*> for block <*> terminating",
+        "sample_log": "PacketResponder 0 for block blk_4068667188725811395 terminating",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_size": "67108864",
+            "ip_address": "10.250.7.230:50010",
+            "block_id": "blk_8663640697928077697"
+        },
+        "template": "BLOCK* NameSystem.addStoredBlock: blockMap updated: {ip_address} is added to {block_id} size {block_size}",
+        "oracle": "BLOCK* NameSystem.addStoredBlock: blockMap updated: <*>:<*> is added to <*> size <*>",
+        "sample_log": "BLOCK* NameSystem.addStoredBlock: blockMap updated: 10.250.7.230:50010 is added to blk_8663640697928077697 size 67108864",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_size": "67108864",
+            "block_id": "blk_-8377763431920892140",
+            "ip_address": "/10.250.6.223"
+        },
+        "template": "Received block {block_id} of size {block_size} from {ip_address}",
+        "oracle": "Received block <*> of size <*> from <*>",
+        "sample_log": "Received block blk_-8377763431920892140 of size 67108864 from /10.250.6.223",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_id": "-3172594752427649592",
+            "source": "/10.251.198.196:57807",
+            "destination": "/10.251.198.196:50010"
+        },
+        "template": "Receiving block blk_{block_id} src: {source} dest: {destination}",
+        "oracle": "Receiving block <*> src: <*>:<*> dest: <*>:<*>",
+        "sample_log": "Receiving block blk_-3172594752427649592 src: /10.251.198.196:57807 dest: /10.251.198.196:50010",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_name": "blk_5782729236964719738",
+            "file_path": "/user/root/rand/_temporary/_task_200811101024_0001_m_001353_0/part-01353"
+        },
+        "template": "BLOCK* NameSystem.allocateBlock: {file_path}. {block_name}",
+        "oracle": "BLOCK* NameSystem.allocateBlock: <*> <*>",
+        "sample_log": "BLOCK* NameSystem.allocateBlock: /user/root/rand/_temporary/_task_200811101024_0001_m_001353_0/part-01353. blk_5782729236964719738",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "variable_name": "blk_9188832735514090334"
+        },
+        "template": "Verification succeeded for {variable_name}",
+        "oracle": "Verification succeeded for <*>",
+        "sample_log": "Verification succeeded for blk_9188832735514090334",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_name": "blk_-8360774680830158225",
+            "file_path": "/mnt/hadoop/dfs/data/current/subdir31/blk_-8360774680830158225"
+        },
+        "template": "Deleting block {block_name} file {file_path}",
+        "oracle": "Deleting block <*> file <*>",
+        "sample_log": "Deleting block blk_-8360774680830158225 file /mnt/hadoop/dfs/data/current/subdir31/blk_-8360774680830158225",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "source_ip": "10.251.106.50",
+            "port": "50010",
+            "block_id": "blk_-8907436477337775860",
+            "destination_ip": "/10.251.106.50"
+        },
+        "template": "{source_ip}:{port} Served block {block_id} to {destination_ip}",
+        "oracle": "<*>:<*> Served block <*> to <*>",
+        "sample_log": "10.251.106.50:50010 Served block blk_-8907436477337775860 to /10.251.106.50",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_id": "blk_6702054389824523327",
+            "ip_address": "10.251.195.33",
+            "port": "50010"
+        },
+        "template": "{ip_address}:{port}:Got exception while serving {block_id} to /{ip_address}:",
+        "oracle": "<*>:<*>:Got exception while serving <*> to <*>:",
+        "sample_log": "10.251.195.33:50010:Got exception while serving blk_6702054389824523327 to /10.251.195.33:",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_id": "blk_6881216037013929188",
+            "datanode": "10.251.91.32:50010"
+        },
+        "template": "BLOCK* NameSystem.delete: {block_id} is added to invalidSet of {datanode}",
+        "oracle": "BLOCK* NameSystem.delete: <*> is added to invalidSet of <*>:<*>",
+        "sample_log": "BLOCK* NameSystem.delete: blk_6881216037013929188 is added to invalidSet of 10.251.91.32:50010",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "source_ip": "10.250.15.198",
+            "source_port": "50010",
+            "thread_name": "Starting",
+            "block_name": "blk_4292382298896622412",
+            "destination_ip": "10.250.15.240",
+            "destination_port": "50010"
+        },
+        "template": "{source_ip}:{source_port} {thread_name} thread to transfer block {block_name} to {destination_ip}:{destination_port}",
+        "oracle": "<*>:<*> Starting thread to transfer block <*> to <*>:<*>",
+        "sample_log": "10.250.15.198:50010 Starting thread to transfer block blk_4292382298896622412 to 10.250.15.240:50010",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_id": "blk_-5140072410813878235",
+            "datanode_ip": "10.250.18.114",
+            "datanode_port": "50010"
+        },
+        "template": "BLOCK* ask {datanode_ip}:{datanode_port} to delete {block_id}",
+        "oracle": "BLOCK* ask <*>:<*> to delete <*>",
+        "sample_log": "BLOCK* ask 10.250.18.114:50010 to delete  blk_-5140072410813878235",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_name": "blk_-4411589101766563890",
+            "source": "/10.250.14.38:37362",
+            "destination": "/10.250.14.38:50010",
+            "size": "67108864"
+        },
+        "template": "Received {block_name} src: {source} dest: {destination} of size {size}",
+        "oracle": "Received block <*> src: <*>:<*> dest: <*>:<*> of size <*>",
+        "sample_log": "Received block blk_-4411589101766563890 src: /10.250.14.38:37362 dest: /10.250.14.38:50010 of size 67108864",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "block_id": "-7571492020523929240",
+            "source_datanode": "10.250.14.38:50010",
+            "destination_datanode": "10.251.122.38:50010"
+        },
+        "template": "BLOCK* ask {source_datanode} to replicate blk_{block_id} to datanode(s) {destination_datanode}",
+        "oracle": "BLOCK* ask <*>:<*> to replicate <*> to datanode(s) <*>:<*>",
+        "sample_log": "BLOCK* ask 10.250.14.38:50010 to replicate blk_-7571492020523929240 to datanode(s) 10.251.122.38:50010",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    }
+]

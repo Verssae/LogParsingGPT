@@ -6,12 +6,12 @@ import logging
 from pathlib import Path
 
 from data_utils import all_datasets
-from LlmLogParser import LlmLogParser
+from LogParsingGPT import LogParsingGPT
 
 class SemanticLogParser:
     
     def __init__(self, template_db=Path('templates.db')) -> None:
-        self.llm_parser = LlmLogParser()
+        self.llm_parser = LogParsingGPT()
         self.templates = self.init_template_db(template_db)
         self.parsed = DataFrame(columns=['log', 'template', 'instances'])
         
