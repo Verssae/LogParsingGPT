@@ -57,7 +57,12 @@ class LogParsingGPT:
         *variables, template = llm_output.split('\n')
         variables = [ [ entity.strip() for entity in var.split('=') ] for var in variables ]
         variables = [ var for var in variables if len(var) == 2 ]
-        variables = { var[0]: eval(var[1]) for var in variables }
+        try:
+            variables = { var[0]: eval(var[1]) for var in variables }
+        except Exception as e:
+            print(e)
+            print(llm_output)
+            exit(0)
 
         template = template.split('=')[1].strip()
         # remove f-string
