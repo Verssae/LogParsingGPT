@@ -6,7 +6,7 @@ import re
 from tqdm import tqdm
 
 instruction = """
-You are an AI log analysis expert. You should look a log message given by user and generate python f-string template which can generate the log message. You should generate python code including variable assignment lines with semantic name (if you think variables exist) and template assignment line. The generated code should generate the user's input log. 
+You are an AI log analysis expert. You should look a log message given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message.The generated code should generate the user's input log. Followings are examples:
 EXAMPLES:
 {examples}
 END EXAMPLES
@@ -97,6 +97,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default=None)
     parser.add_argument('--read', type=bool, default=False)
+    parser.add_argument('--auto', type=bool, default=False, help='No need to confirm')
     args = parser.parse_args()
 
     if args.read:
@@ -111,9 +112,10 @@ if __name__ == '__main__':
     test_data = load_dataset(args.dataset)
     test_templates = test_data['template'].unique()
 
-    confirm = input(f'You are going to parse {len(test_templates)} templates from {args.dataset}. Continue? (y/n) ')
-    if confirm.lower() != 'y':
-        exit(0)
+    if not args.auto:
+        confirm = input(f'You are going to parse {len(test_templates)} templates from {args.dataset}. Continue? (y/n) ')
+        if confirm.lower() != 'y':
+            exit(0)
 
     log_parser = LogParsingGPT()
 
@@ -124,6 +126,7 @@ if __name__ == '__main__':
         log_messages = log_messages['log'].tolist()
 
         sample_log = random.choice(log_messages)
+        print(f'Parsing [{template}] \nfrom [{sample_log}]')
 
         llm_output = log_parser.llm_run(f"'{sample_log}'")
         output = log_parser.output_parse(llm_output)
@@ -136,7 +139,7 @@ if __name__ == '__main__':
         output['unmatched'] = [ log for log in log_messages if log not in matches ]
         output['wrong_matches'] = [ log for log in matches if log not in log_messages ]
         result.append(output)
-        print(f'Parsed {output["template"]} from {sample_log}')
+        print(f'Parsed [{output["template"]}] with Variables [{output["variables"]}]\nfrom [{sample_log}]')
         print(f'Matches: {len(matches)} / {len(log_messages)}')
         print('----------------------------------')
     

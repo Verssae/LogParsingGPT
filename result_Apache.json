@@ -1,0 +1,73 @@
+[
+    {
+        "variables": {
+            "variable1": "workerEnv.init() ok",
+            "variable2": "/etc/httpd/conf/workers2.properties"
+        },
+        "template": "{variable1} {variable2}",
+        "oracle": "workerEnv.init() ok <*>",
+        "sample_log": "workerEnv.init() ok /etc/httpd/conf/workers2.properties",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "worker_state": "7"
+        },
+        "template": "mod_jk child workerEnv in error state {worker_state}",
+        "oracle": "mod_jk child workerEnv in error state <*>",
+        "sample_log": "mod_jk child workerEnv in error state 7",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "child_pid": "6340",
+            "slot_number": "6"
+        },
+        "template": "jk2_init() Found child {child_pid} in scoreboard slot {slot_number}",
+        "oracle": "jk2_init() Found child <*> in scoreboard slot <*>",
+        "sample_log": "jk2_init() Found child 6340 in scoreboard slot 6",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "status_code": "403",
+            "ip_address": "68.228.3.15",
+            "directory_path": "/var/www/html/"
+        },
+        "template": "[client {ip_address}] Directory index forbidden by rule: {directory_path}",
+        "oracle": "[client <*>] Directory index forbidden by rule: <*>",
+        "sample_log": "[client 68.228.3.15] Directory index forbidden by rule: /var/www/html/",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "variable1": "1567"
+        },
+        "template": "jk2_init() Can't find child {variable1} in scoreboard",
+        "oracle": "jk2_init() Can't find child <*> in scoreboard",
+        "sample_log": "jk2_init() Can't find child 1567 in scoreboard",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    },
+    {
+        "variables": {
+            "worker_id": "1",
+            "error_code": "-2"
+        },
+        "template": "mod_jk child init {worker_id} {error_code}",
+        "oracle": "mod_jk child init <*> <*>",
+        "sample_log": "mod_jk child init 1 -2",
+        "accuracy": 1.0,
+        "unmatched": [],
+        "wrong_matches": []
+    }
+]
