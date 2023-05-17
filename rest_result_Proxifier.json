@@ -1,0 +1,142 @@
+{
+    "{host}:{host_port} error : Could not connect through proxy {proxy}:{proxy_port} - Proxy server cannot establish a connection with the target, status code {error_code}": {
+        "variables": {
+            "host": "local-p2p.qq.com",
+            "host_port": "443",
+            "proxy": "proxy.cse.cuhk.edu.hk",
+            "proxy_port": "5070",
+            "error_code": "503"
+        },
+        "matches": [
+            "local-p2p.qq.com:443 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 503",
+            "formi.baidu.com:843 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "mtalk.google.com:5228 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "i2.itc.cn:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 503",
+            "127.0.0.1:135 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "qd-update.qq.com:8080 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "update.hicloud.com:8180 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "203.205.129.102:8080 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403"
+        ]
+    },
+    "{host}:{host_port} error : Could not connect through proxy {proxy}:{proxy_port} - Proxy closed the connection unexpectedly.": {
+        "variables": {
+            "host": "config.pinyin.sogou.com",
+            "host_port": "80",
+            "proxy": "proxy.cse.cuhk.edu.hk",
+            "proxy_port": "5070"
+        },
+        "matches": [
+            "config.pinyin.sogou.com:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly.",
+            "tcpconn4.tencent.com:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly.",
+            "86.99.222.235:443 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly."
+        ]
+    },
+    "{host}:{host_port} error : Could not connect to proxy {proxy}:{proxy_port} - Could not resolve {proxy} error {error_code}": {
+        "variables": {
+            "host": "mtalk.google.com",
+            "host_port": "5228",
+            "proxy": "proxy.cse.cuhk.edu.hk",
+            "proxy_port": "5070",
+            "error_code": "11001"
+        },
+        "matches": [
+            "mtalk.google.com:5228 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "awqiizxequsixgr:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "203.205.151.204:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "c.baidu.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "bolt.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "ss.bdimg.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "get.sogou.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "s1.bdstatic.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "www.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "clients4.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "www.qq.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "120.204.0.139:8080 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "www.baidu.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "101.226.211.46:8080 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "client.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "223.167.104.147:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "wpad:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001"
+        ]
+    },
+    "{host}:{host_port} error : Could not connect to proxy {proxy}:{proxy_port} - connection attempt failed with error {error_code}": {
+        "variables": {
+            "host": "client-cf.dropbox.com",
+            "host_port": "443",
+            "proxy": "proxy.cse.cuhk.edu.hk",
+            "proxy_port": "5070",
+            "error_code": "10061"
+        },
+        "matches": [
+            "client-cf.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "mtalk.google.com:5228 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "client-lb.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "bolt.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "www.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "qa.sockets.stackexchange.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "13.client-channel.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "16.client-channel.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061"
+        ]
+    },
+    "{host}:{host_port} error : {error_msg}": {
+        "variables": {
+            "host": "oimageb8.ydstatic.com",
+            "host_port": "80",
+            "error_msg": "A connection request was canceled before the completion."
+        },
+        "matches": [
+            "local-p2p.qq.com:443 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 503",
+            "formi.baidu.com:843 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "mtalk.google.com:5228 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "config.pinyin.sogou.com:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly.",
+            "mtalk.google.com:5228 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "awqiizxequsixgr:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "client-cf.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "203.205.151.204:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "oimageb8.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "tcpconn4.tencent.com:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly.",
+            "mtalk.google.com:5228 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "client-lb.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "tcpconn6.tencent.com:443 error : A connection request was canceled before the completion.",
+            "c.baidu.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "oimageb4.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "oimageb5.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "i2.itc.cn:80 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 503",
+            "127.0.0.1:135 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "oimageb1.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "bolt.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "oimageb3.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "oimageb2.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "ss.bdimg.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "csdnimg.cn:80 error : A connection request was canceled before the completion.",
+            "get.sogou.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "bolt.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "oimagec4.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "s1.bdstatic.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "hm.baidu.com:80 error : A connection request was canceled before the completion.",
+            "www.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "oimagec1.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "oimagec7.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "qd-update.qq.com:8080 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "www.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "oimagea5.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "clients4.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "www.qq.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "qa.sockets.stackexchange.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "120.204.0.139:8080 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "www.baidu.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "13.client-channel.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "update.hicloud.com:8180 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "101.226.211.46:8080 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "86.99.222.235:443 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy closed the connection unexpectedly.",
+            "client-cf.dropbox.com:443 error : A connection request was canceled before the completion.",
+            "16.client-channel.google.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - connection attempt failed with error 10061",
+            "client.dropbox.com:443 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "223.167.104.147:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001",
+            "hm.baidu.com:443 error : A connection request was canceled before the completion.",
+            "oimagea3.ydstatic.com:80 error : A connection request was canceled before the completion.",
+            "203.205.129.102:8080 error : Could not connect through proxy proxy.cse.cuhk.edu.hk:5070 - Proxy server cannot establish a connection with the target, status code 403",
+            "wpad:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001"
+        ]
+    }
+}

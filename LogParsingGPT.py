@@ -6,7 +6,7 @@ import re
 from tqdm import tqdm
 
 instruction = """
-You are an AI log analysis expert. You should look log messages given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message. The generated code should generate the user's input log. Followings are examples:
+You are an AI log analysis expert. You should look a log message given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message. The generated code should generate the user's input log. Followings are examples:
 EXAMPLES:
 {examples}
 END EXAMPLES
@@ -44,32 +44,37 @@ class LogParsingGPT:
         self.messages = [{"role": "system", "content": instruction.format(examples='\n'.join(self.examples))}]
 
     def llm_run(self, user_prompt: str) -> str:
-        self.messages.append({"role": "user", "content": user_prompt})
         response = openai.ChatCompletion.create(
             model=self.model,
-            temperature=0.0,
-            messages=self.messages,
+            top_p=1,
+            messages=self.messages + [{"role": "user", "content": user_prompt}]
         )
-        self.messages.append({"role": "assistant", "content": response['choices'][0]['message']['content']})
         return response['choices'][0]['message']['content']
-    
+        
     def output_parse(self,llm_output: str) -> dict:
         llm_output = llm_output.replace('ASSISTANT:\n', '')
         *variables, template = llm_output.split('\n')
-        variables = [ [ entity.strip() for entity in var.split('=') ] for var in variables ]
-        variables = [ var for var in variables if len(var) == 2 ]
         try:
-            variables = { var[0]: eval(var[1]) for var in variables }
+            before = locals().copy()
+            exec('\n'.join(variables))
+            after = locals().copy()
+            variables = {k: after[k] for k in after if k not in before and k != 'before'}
+            
         except Exception as e:
-            print(e)
+            print("ERROR:",e)
             print(llm_output)
             exit(0)
 
-        template = template.split('=')[1].strip()
-        # remove f-string
-        template = template[2:-1]
-        # remove all '\' from template
-        template = template.replace('\\', '')
+        try:
+            template = template.split('=')[1].strip()
+            # remove f-string
+            template = template[2:-1]
+            # remove all '\' from template
+            template = template.replace('\\', '')
+        except Exception as e:
+            print("ERROR:",e)
+            print(llm_output)
+            exit(0)
 
         return {'variables': variables, 'template': template}
     
@@ -90,7 +95,8 @@ def check_substring_set(string, substring_set):
         current_index = substring_index + len(substring)
     return True
        
-def match_template(logs: list[str], stared_template: str):
+def match_template(logs: list[str], template: str):
+    stared_template = var_to_star(template)
     return [ log for log in logs if check_substring_set(log, stared_template.split('<*>'))]
      
 def replace_variable(string):
@@ -105,48 +111,44 @@ def var_to_star(template: str) -> str:
 def run(logs: list[str]):
     log_parser = LogParsingGPT()
     result = {}
-    skips = set()
-    i = 0
-    total = len(logs)
-    print(f'Parsing {total} logs')
-    while True:
-        
-        log, *logs = logs
-        if log in skips:
-            logs.append(log)
+    logset = set(logs)
+    all_matches = set()
+    total = len(logset)
+    for unique_log in logset:
+        if unique_log in all_matches:
             continue
-        llm_output = log_parser.llm_run(f"'{log}'")
+        print(f'Parsed {len(all_matches)}/{total} logs')
+        llm_output = log_parser.llm_run(f"'{unique_log}'")
         output = log_parser.output_parse(llm_output)
-        stared_template = var_to_star(output['template'])
-        matches = match_template(logs, stared_template)
-        i = i + 1
-        if len(matches) == 0:
-            logs.append(log)
-            skips.add(log)
-        else:
-            logs = [ log for log in logs if log not in matches ]
-            result[output['template']] = {
-                'variables': output['variables'],
-                'matches': matches
-            }
-
-        if i % 3 == 0:
-            print(result.keys())
-            print(log_parser.messages)
-            confirm = input(f'{len(result)} templates found and {len(logs)} logs left. Continue? (y/n) ')
-            if confirm.lower() != 'y':
-                break
-        if len(logs) == 0:
-            break
-
+        matches = match_template(list(logset), output['template'])
+                
+        result[output['template']] = {
+            'variables': output['variables'],
+            'matches': matches,
+        }
+        all_matches.update(matches)
         
     print(f'Parsed {len(result)} templates from {total} logs')
-    return result, logs
+    for t in result:
+        print(t)
+    return result, logset - all_matches
 
+def duplicate_template(templates: list[str]):
+    for t in templates:
+        result = match_template(templates, t)
+        if len(result) > 1:
+            print(t)
+            print([ r for r in result if r != t])
+                
+
+def revisit_template(logs: list[str], stared_template: str):
+    # 교집합이 있는 경우, 
+    return [ log for log in logs if check_substring_set(log, stared_template.split('<*>'))]
         
 if __name__ == '__main__':
     from data_utils import load_dataset
     import argparse
+    import json
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, required=True)
@@ -154,19 +156,19 @@ if __name__ == '__main__':
     parser.add_argument('--auto', type=bool, default=False, help='No need to confirm')
     args = parser.parse_args()
 
-    # if args.read:
-    #     with open('result.json', 'r') as f:
-    #         result = json.load(f)
-    #     for output in result:
-    #         print(f'Parsed {output["template"]} from {output["sample_log"]}')
-    #         print(f'Matches: {len(output["unmatched"])} / {len(output["unmatched"]) + len(output["wrong_matches"])}')
-    #         print('----------------------------------')
-    #     exit(0)
+    if args.read:
+        with open(f'result_{args.dataset}.json', 'r') as f:
+            result = json.load(f)
+
+        duplicate_template(result.keys())
+        exit(0)
 
     test_data = load_dataset(args.dataset)
     logs = test_data['log'].tolist()
     random.shuffle(logs)
     result, logs = run(logs)
+
+    duplicate_template(result.keys())
 
     # test_templates = test_data['template'].unique()
 
