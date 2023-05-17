@@ -6,17 +6,19 @@ import re
 from tqdm import tqdm
 
 instruction = """
-You are an AI log analysis expert. You should look a log message given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message.The generated code should generate the user's input log. Followings are examples:
+You are an AI log analysis expert. You should look log messages given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message. The generated code should generate the user's input log. Followings are examples:
 EXAMPLES:
 {examples}
 END EXAMPLES
 """.strip()
 
 examples = [
-    "USER: 'Returning 500 to user'",
-    "ASSISTANT: status_code = '500'\ntemplate = f'Returning {status_code} to user'\n",
+    "USER: 'workerEnv.init() ok /etc/httpd/conf/workers2.properties'",
+    "ASSISTANT: path = '/etc/httpd/conf/workers2.properties'\ntemplate = f'workerEnv.init() ok {path}'\n",
     "USER: 'Listing instance in cell 949e1227'",
     "ASSISTANT: cell_id = '949e1227'\ntemplate = f'Listing instance in cell {cell_id}'\n",
+    "USER: 'ss.bdimg.com:80 error : Could not connect to proxy proxy.cse.cuhk.edu.hk:5070 - Could not resolve proxy.cse.cuhk.edu.hk error 11001'",
+    "ASSISTANT: host = 'ss.bdimg.com'\nhost_port = '80'\nproxy = 'proxy.cse.cuhk.edu.hk'\nproxy_port = '5070'\nerror_cde = '11001'\ntemplate = f'{host}:{host_port} error : Could not connect to proxy {proxy}:{proxy_port} - Could not resolve proxy {proxy} error {error_code}'",
     "USER: 'onReceive action: android.intent.action.SCREEN_ON'",
     "ASSISTANT: template = f'onReceive action: android.intent.action.SCREEN_ON'"
 ]
@@ -34,22 +36,21 @@ class LogParsingGPT:
     def __init__(self, openai_api_key: str = None) -> None:
         openai.api_key = openai_api_key or os.environ.get('OPENAI_API_KEY')
         self.model = 'gpt-3.5-turbo'
-        self.history = []
+
         self.instruction = instruction
         self.examples = examples
         self.second_instruction = second_instruction
         self.third_instruction = third_instruction
+        self.messages = [{"role": "system", "content": instruction.format(examples='\n'.join(self.examples))}]
 
     def llm_run(self, user_prompt: str) -> str:
+        self.messages.append({"role": "user", "content": user_prompt})
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=0.0,
-            messages=[
-                {"role": "system", "content": instruction.format(examples='\n'.join(self.examples))},
-                *self.history,
-                {"role": "user", "content": user_prompt}
-            ]
+            messages=self.messages,
         )
+        self.messages.append({"role": "assistant", "content": response['choices'][0]['message']['content']})
         return response['choices'][0]['message']['content']
     
     def output_parse(self,llm_output: str) -> dict:
@@ -80,15 +81,68 @@ class LogParsingGPT:
         else:
             raise ValueError('llm_output should start with yes or no')
         
-def match_template(logs: list[str], regex_template: str):
-    return [ log for log in logs if re.fullmatch(regex_template, log)]
+def check_substring_set(string, substring_set):
+    current_index = 0
+    for substring in substring_set:
+        substring_index = string.find(substring, current_index)
+        if substring_index == -1:
+            return False
+        current_index = substring_index + len(substring)
+    return True
+       
+def match_template(logs: list[str], stared_template: str):
+    return [ log for log in logs if check_substring_set(log, stared_template.split('<*>'))]
      
+def replace_variable(string):
+    pattern = r'{(.*?)}'  # '{variable_name}' 패턴을 정규식으로 표현
+    replaced_string = re.sub(pattern, r'<*>', string)
+    return replaced_string
 
-def sem_to_regex(template: str, variables: list[str]) -> str:
-    regex = re.escape(template)
-    for var in variables:
-        regex = regex.replace('\\{' + var + '\\}', '(.+)')
-    return regex
+def var_to_star(template: str) -> str:
+    replaced_template = replace_variable(template)
+    return replaced_template
+
+def run(logs: list[str]):
+    log_parser = LogParsingGPT()
+    result = {}
+    skips = set()
+    i = 0
+    total = len(logs)
+    print(f'Parsing {total} logs')
+    while True:
+        
+        log, *logs = logs
+        if log in skips:
+            logs.append(log)
+            continue
+        llm_output = log_parser.llm_run(f"'{log}'")
+        output = log_parser.output_parse(llm_output)
+        stared_template = var_to_star(output['template'])
+        matches = match_template(logs, stared_template)
+        i = i + 1
+        if len(matches) == 0:
+            logs.append(log)
+            skips.add(log)
+        else:
+            logs = [ log for log in logs if log not in matches ]
+            result[output['template']] = {
+                'variables': output['variables'],
+                'matches': matches
+            }
+
+        if i % 3 == 0:
+            print(result.keys())
+            print(log_parser.messages)
+            confirm = input(f'{len(result)} templates found and {len(logs)} logs left. Continue? (y/n) ')
+            if confirm.lower() != 'y':
+                break
+        if len(logs) == 0:
+            break
+
+        
+    print(f'Parsed {len(result)} templates from {total} logs')
+    return result, logs
+
         
 if __name__ == '__main__':
     from data_utils import load_dataset
@@ -100,50 +154,59 @@ if __name__ == '__main__':
     parser.add_argument('--auto', type=bool, default=False, help='No need to confirm')
     args = parser.parse_args()
 
-    if args.read:
-        with open('result.json', 'r') as f:
-            result = json.load(f)
-        for output in result:
-            print(f'Parsed {output["template"]} from {output["sample_log"]}')
-            print(f'Matches: {len(output["unmatched"])} / {len(output["unmatched"]) + len(output["wrong_matches"])}')
-            print('----------------------------------')
-        exit(0)
+    # if args.read:
+    #     with open('result.json', 'r') as f:
+    #         result = json.load(f)
+    #     for output in result:
+    #         print(f'Parsed {output["template"]} from {output["sample_log"]}')
+    #         print(f'Matches: {len(output["unmatched"])} / {len(output["unmatched"]) + len(output["wrong_matches"])}')
+    #         print('----------------------------------')
+    #     exit(0)
 
     test_data = load_dataset(args.dataset)
-    test_templates = test_data['template'].unique()
+    logs = test_data['log'].tolist()
+    random.shuffle(logs)
+    result, logs = run(logs)
 
-    if not args.auto:
-        confirm = input(f'You are going to parse {len(test_templates)} templates from {args.dataset}. Continue? (y/n) ')
-        if confirm.lower() != 'y':
-            exit(0)
+    # test_templates = test_data['template'].unique()
 
-    log_parser = LogParsingGPT()
+    # if not args.auto:
+    #     confirm = input(f'You are going to parse {len(test_templates)} templates from {args.dataset}. Continue? (y/n) ')
+    #     if confirm.lower() != 'y':
+    #         exit(0)
 
-    result = []
+    # log_parser = LogParsingGPT()
 
-    for template in tqdm(test_templates):
-        log_messages = test_data[test_data['template'] == template]
-        log_messages = log_messages['log'].tolist()
+    # result = []
 
-        sample_log = random.choice(log_messages)
-        print(f'Parsing [{template}] \nfrom [{sample_log}]')
+    # for template in tqdm(test_templates):
+    #     log_messages = test_data[test_data['template'] == template]
+    #     log_messages = log_messages['log'].tolist()
 
-        llm_output = log_parser.llm_run(f"'{sample_log}'")
-        output = log_parser.output_parse(llm_output)
+    #     sample_log = random.choice(log_messages)
+    #     print(f'Parsing [{template}] \nfrom [{sample_log}]')
 
-        regex_template = sem_to_regex(output['template'], list(output['variables'].keys()))
-        matches = match_template(log_messages, regex_template)
-        output['oracle'] = template
-        output['sample_log'] = sample_log
-        output['accuracy'] = len(matches) / len(log_messages)
-        output['unmatched'] = [ log for log in log_messages if log not in matches ]
-        output['wrong_matches'] = [ log for log in matches if log not in log_messages ]
-        result.append(output)
-        print(f'Parsed [{output["template"]}] with Variables [{output["variables"]}]\nfrom [{sample_log}]')
-        print(f'Matches: {len(matches)} / {len(log_messages)}')
-        print('----------------------------------')
+    #     llm_output = log_parser.llm_run(f"'{sample_log}'")
+    #     output = log_parser.output_parse(llm_output)
+
+    #     regex_template = sem_to_regex(output['template'], list(output['variables'].keys()))
+    #     matches = match_template(log_messages, regex_template)
+    #     output['oracle'] = template
+    #     output['sample_log'] = sample_log
+    #     output['accuracy'] = len(matches) / len(log_messages)
+    #     output['unmatched'] = [ log for log in log_messages if log not in matches ]
+    #     output['wrong_matches'] = [ log for log in matches if log not in log_messages ]
+    #     result.append(output)
+    #     print(f'Parsed [{output["template"]}] with Variables [{output["variables"]}]\nfrom [{sample_log}]')
+    #     print(regex_template)
+    #     print(f'Matches: {len(matches)} / {len(log_messages)}')
+    #     print('----------------------------------')
     
     # sve result to file
     import json
     with open(f'result_{args.dataset}.json', 'w') as f:
         json.dump(result, f, indent=4)
+
+    with open(f'left_{args.dataset}.txt', 'w') as f:
+        f.write('\n'.join(logs))
+
