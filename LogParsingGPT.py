@@ -81,7 +81,7 @@ class LogParsingGPT:
             raise ValueError('llm_output should start with yes or no')
         
 def match_template(logs: list[str], regex_template: str):
-    return [ log for log in logs if re.match(regex_template, log)]
+    return [ log for log in logs if re.fullmatch(regex_template, log)]
      
 
 def sem_to_regex(template: str, variables: list[str]) -> str:
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default=None)
+    parser.add_argument('--dataset', type=str, required=True)
     parser.add_argument('--read', type=bool, default=False)
     parser.add_argument('--auto', type=bool, default=False, help='No need to confirm')
     args = parser.parse_args()

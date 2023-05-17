@@ -24,12 +24,12 @@
     },
     {
         "variables": {
-            "child_pid": "6340",
-            "slot_number": "6"
+            "child_pid": "5425",
+            "slot_number": "9"
         },
         "template": "jk2_init() Found child {child_pid} in scoreboard slot {slot_number}",
         "oracle": "jk2_init() Found child <*> in scoreboard slot <*>",
-        "sample_log": "jk2_init() Found child 6340 in scoreboard slot 6",
+        "sample_log": "jk2_init() Found child 5425 in scoreboard slot 9",
         "accuracy": 1.0,
         "unmatched": [],
         "wrong_matches": []
@@ -37,23 +37,24 @@
     {
         "variables": {
             "status_code": "403",
-            "ip_address": "68.228.3.15",
+            "ip_address": "211.62.201.48",
             "directory_path": "/var/www/html/"
         },
         "template": "[client {ip_address}] Directory index forbidden by rule: {directory_path}",
         "oracle": "[client <*>] Directory index forbidden by rule: <*>",
-        "sample_log": "[client 68.228.3.15] Directory index forbidden by rule: /var/www/html/",
+        "sample_log": "[client 211.62.201.48] Directory index forbidden by rule: /var/www/html/",
         "accuracy": 1.0,
         "unmatched": [],
         "wrong_matches": []
     },
     {
         "variables": {
-            "variable1": "1567"
+            "variable1": "jk2_init()",
+            "variable2": "2087"
         },
-        "template": "jk2_init() Can't find child {variable1} in scoreboard",
+        "template": "{variable1} Can't find child {variable2} in scoreboard",
         "oracle": "jk2_init() Can't find child <*> in scoreboard",
-        "sample_log": "jk2_init() Can't find child 1567 in scoreboard",
+        "sample_log": "jk2_init() Can't find child 2087 in scoreboard",
         "accuracy": 1.0,
         "unmatched": [],
         "wrong_matches": []
