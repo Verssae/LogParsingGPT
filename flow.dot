@@ -1,0 +1,33 @@
+digraph G {
+    rankdir=TB;
+    node [shape=box, style=filled, color=lightgrey];
+    start [label="START: run_pipeline(logset, result, temperature)"];
+    checkresult [label="result is None?"];
+    setresult [label="Set result = {}"];
+    initialize [label="Initialize log_parser and matched_logset"];
+    logloop [label="For each log in logset"];
+    logmatchcheck [label="log in matched_logset?"];
+    processlog [label="Process log and find matches"];
+    updatecheck [label="matches is not empty?"];
+    updateresult [label="Update result and matched_logset"];
+    logend [label="END of log loop"];
+    remainingcheck [label="remaining_logset is empty?"];
+    recursion [label="run_pipeline(remaining_logset, result, 0.8)"];
+    end [label="END: return result"];
+    start -> checkresult;
+    checkresult -> setresult [label="Yes"];
+    setresult -> initialize;
+    checkresult -> initialize [label="No"];
+    initialize -> logloop;
+    logloop -> logmatchcheck;
+    logmatchcheck -> processlog [label="No"];
+    logmatchcheck -> logend [label="Yes"];
+    processlog -> updatecheck;
+    updatecheck -> updateresult [label="Yes"];
+    updatecheck -> logend [label="No"];
+    updateresult -> logend;
+    logend -> remainingcheck;
+    remainingcheck -> recursion [label="No"];
+    remainingcheck -> end [label="Yes"];
+    recursion -> end;
+}

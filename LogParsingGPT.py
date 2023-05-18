@@ -4,8 +4,6 @@ import os
 import re
 from typing import Tuple
 
-from tqdm import tqdm
-
 # You are an AI log analysis expert. Given a log message by user, parse it into variables and template using python f-string syntax. If there are no semantic variable names in this log, just provide `template = log_message`. The code you provide should be excutable and can generate the same user's input log. Do not include any explanations. Only provide the code. Here are some examples:
 
 instruction = """
@@ -154,9 +152,6 @@ def duplicate_template(templates: list[str]):
                 same.append((t,s))
     return dups, same
     
-            
-
-        
 if __name__ == '__main__':
     from data_utils import load_dataset
     import argparse
