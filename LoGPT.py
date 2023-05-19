@@ -1,10 +1,6 @@
-import random
 import openai
 import os
 import re
-from typing import Tuple
-
-# You are an AI log analysis expert. Given a log message by user, parse it into variables and template using python f-string syntax. If there are no semantic variable names in this log, just provide `template = log_message`. The code you provide should be excutable and can generate the same user's input log. Do not include any explanations. Only provide the code. Here are some examples:
 
 instruction = """
 You are an AI log analysis expert. You should look a log message given by user then generate python code including variable assigning lines and f-string template assigining line. If there are no semantic variable names in this log message, template should be same as the log message. The generated code should generate the user's input log. Followings are examples:
@@ -33,7 +29,7 @@ third_instruction = """
 Third, you should update the template to make it more generic and meaningful. The template should still be able to generate the sample log messages.
 """.strip()
 
-class LogParsingGPT:
+class LoGPT:
     def __init__(self, temparature=0.2, openai_api_key: str = None) -> None:
         openai.api_key = openai_api_key or os.environ.get('OPENAI_API_KEY')
         self.model = 'gpt-3.5-turbo'
@@ -71,15 +67,6 @@ class LogParsingGPT:
         template = template.replace("\\'", "'")
 
         return {'variables': variables, 'template': template}
-        
-def check_substring_set(string, substring_set):
-    current_index = 0
-    for substring in substring_set:
-        substring_index = string.find(substring, current_index)
-        if substring_index == -1:
-            return False
-        current_index = substring_index + len(substring)
-    return True
        
 def match_template(logs: list[str], template: str) -> list[str]:
     template = replace_variable(template)
@@ -93,51 +80,41 @@ def replace_variable(string):
     replaced_string = re.sub(pattern, r'<*>', string)
     return replaced_string
 
-def var_to_star(template: str) -> str:
-    replaced_template = replace_variable(template)
-    return replaced_template
-
-def pipeline(logset: set[str], result: dict[str, dict], temparature=0.2) -> Tuple[dict[str, dict], set[str]]:
-    print('---PIPELINE---')
-    log_parser = LogParsingGPT(temparature=temparature)
-    all_matches = set()
-    for unique_log in logset:
-        if unique_log in all_matches:
+def run_pipeline(unmatched_logs: set[str], matched_logs: set[str]=set(), result: dict[str, dict]={}, temparature: float = 0.0, verbos: bool=False) -> dict[str, dict]:
+    if verbos:
+        print('---RUN PIPELINE---')
+    logpt = LoGPT(temparature=temparature)
+    for log in unmatched_logs:
+        if log in matched_logs:
             continue
-        print(f'Parsed {len(all_matches)} / {len(logset)} logs')
-        llm_output = log_parser.llm_run(f"'{unique_log}'")
+        llm_output = logpt.llm_run(f"'{log}'")
+        # valid template ?
         try:
-            output = log_parser.output_parse(llm_output)
+            output = logpt.output_parse(llm_output)
         except Exception as e:
             print("---[ERROR]---\n",e)
-            print(f'{unique_log} \n-> \n{llm_output}')
+            print(f'{log} \n-> \n{llm_output}')
             print("---[SKIP THIS LOG]---")
             continue
-        matches = match_template(list(logset), output['template'])
-
+        matches = match_template(list(unmatched_logs), output['template'])
         if len(matches) > 0:
             result[output['template']] = {
                 'variables': output['variables'],
                 'matches': matches,
             }
+            matched_logs.update(matches)
         else:
-            print("---[NO MATCH]---")
-            print(f'{unique_log} \n-> \n{output["template"]}')
-            print("---[SKIP THIS LOG]---")
-        all_matches.update(matches)
-    print(f'Parsed {len(result)} templates from {len(all_matches)} / {len(logset)} logs')
-    
-    return result, logset - all_matches
+            if verbos:
+                print("---[NO MATCH]---")
+                print(f'{log} \n-> \n{output["template"]}')
+                print("---[SKIP THIS LOG]---")
 
-def run(logs: list[str]) -> dict[str, dict]:
-    result = {}
-    random.shuffle(logs)
-    logset = set(logs)
-    result, logset = pipeline(logset, result, temparature=0.0)
-    while len(logset) > 0:
-        result, logset = pipeline(logset, result, temparature=0.8)
-    return result
+        if verbos:
+            print(f'Parsed {len(result)} templates from {len(matched_logs)} / {len(unmatched_logs)} logs')
 
+    return run_pipeline(unmatched_logs - matched_logs, matched_logs, result, temparature=0.8) if len(unmatched_logs - matched_logs) > 0 else result
+
+# TODO: duplicate template detection algorithm
 def duplicate_template(templates: list[str]):
     dups = {}
     for t in templates:
@@ -160,21 +137,18 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, required=True)
     parser.add_argument('--read', type=bool, default=False)
+    parser.add_argument('--verbose', type=bool, default=False)
     args = parser.parse_args()
 
     if args.read:
         with open(f'results/result_{args.dataset}.json', 'r') as f:
             result = json.load(f)
-
-        duplicate_template(result.keys())
+        print(result)
         exit(0)
 
     test_data = load_dataset(args.dataset)
     logs = test_data['log'].tolist()
-    result = run(logs)
-
-    # print('---[Duplicated templates]---')
-    # duplicate_template(result.keys())
+    result = run_pipeline(set(logs), verbos=args.verbose)
 
     import json
     with open(f'results/result_{args.dataset}.json', 'w') as f:
