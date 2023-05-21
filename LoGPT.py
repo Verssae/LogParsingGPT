@@ -30,7 +30,7 @@ Third, you should update the template to make it more generic and meaningful. Th
 """.strip()
 
 class LoGPT:
-    def __init__(self, temparature=0.2, openai_api_key: str = None) -> None:
+    def __init__(self, temparature=0.0, openai_api_key: str = None) -> None:
         openai.api_key = openai_api_key or os.environ.get('OPENAI_API_KEY')
         self.model = 'gpt-3.5-turbo'
         self.temparature = temparature
@@ -57,7 +57,8 @@ class LoGPT:
         after = locals().copy()
         variables = {k: after[k] for k in after if k not in before and k != 'before'}
         
-        template = template.split('=')[1].strip()
+        _, *template = template.split('=')
+        template = '='.join(template).strip()
 
         if template.startswith('f'):
             template = template[1:]
@@ -71,7 +72,7 @@ class LoGPT:
 def match_template(logs: list[str], template: str) -> list[str]:
     template = replace_variable(template)
     template = re.escape(template)
-    template = template.replace(r'<\*>', r'(.+)')
+    template = template.replace(r'<\*>', r'(.*)')
     regex = re.compile(template)
     return [ log for log in logs if regex.match(log) ]
      
