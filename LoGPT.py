@@ -30,7 +30,7 @@ Third, you should update the template to make it more generic and meaningful. Th
 """.strip()
 
 class LoGPT:
-    def __init__(self, temparature=0.0, openai_api_key: str = None) -> None:
+    def __init__(self, temparature=0.2, openai_api_key: str = None) -> None:
         openai.api_key = openai_api_key or os.environ.get('OPENAI_API_KEY')
         self.model = 'gpt-3.5-turbo'
         self.temparature = temparature
@@ -81,7 +81,7 @@ def replace_variable(string):
     replaced_string = re.sub(pattern, r'<*>', string)
     return replaced_string
 
-def run_pipeline(unmatched_logs: set[str], matched_logs: set[str]=set(), result: dict[str, dict]={}, temparature: float = 0.0, verbos: bool=False) -> dict[str, dict]:
+def run_pipeline(unmatched_logs: set[str], matched_logs: set[str]=set(), result: dict[str, dict]={}, temparature: float = 0.2, verbos: bool=False) -> dict[str, dict]:
     if verbos:
         print('---RUN PIPELINE---')
     logpt = LoGPT(temparature=temparature)
