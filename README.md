@@ -40,3 +40,12 @@ To run the code, the following dependencies are required:
 - pandas
 - openai
 
+## API Key Setup
+
+To run this project, you need to set the OpenAI API key as an environment variable. Use the following command to export your OpenAI API key before running the script:
+
+```bash
+export OPENAI_API_KEY=<your_openai_api_key>
+```
+
+Replace <your_openai_api_key> with your actual OpenAI API key.
