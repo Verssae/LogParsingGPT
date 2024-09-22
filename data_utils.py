@@ -4,7 +4,7 @@ import pandas as pd
 import sqlite3
 import random
 
-base_dir=Path('./logs')
+base_dir=Path('./loghub')
 
 def load_dataset(project):
     log_file = base_dir / project / f'{project}_2k.log_structured_corrected.csv'
